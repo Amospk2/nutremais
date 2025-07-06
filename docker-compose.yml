@@ -1,0 +1,33 @@
+version: "3.9"
+
+services:
+  web:
+    build: .
+    container_name: fastapi_app
+    ports:
+      - "8000:80"
+    volumes:
+      - ./app:/code/app
+    depends_on:
+      - db
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/postgres
+      - SECRET_KEY=f87ce669bdeb61b4dfedcd3b4c4fb20ba713e349ba79622a7ec9392bd77584e4 # Mocked Secret Key will be replace
+      - ALGORITHM=HS256
+      - ACCESS_TOKEN_EXPIRE_MINUTES=30
+
+  db:
+    image: postgres:13
+    container_name: postgres_db
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
