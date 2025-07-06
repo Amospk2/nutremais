@@ -12,6 +12,12 @@ sqlalchemy = "^2.0.41"
 psycopg2-binary = "^2.9.10"
 pyjwt = "^2.10.1"
 passlib = {extras = ["bcrypt==4.0.1"], version = "^1.7.4"}
+ruff = "^0.12.2"
+pre-commit = "^4.2.0"
+
+
+[tool.ruff.lint]
+select = ["E", "F"]
 
 
 [build-system]

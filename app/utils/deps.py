@@ -6,9 +6,11 @@ import os
 
 
 def get_session():
-    DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://postgres:postgres@localhost:5432/postgres")
+    DATABASE_URL = os.getenv(
+        "DATABASE_URL", "postgresql://postgres:postgres@localhost:5432/postgres"
+    )
     engine = create_engine(DATABASE_URL)
-    
+
     with Session(engine) as session:
         yield session
 
