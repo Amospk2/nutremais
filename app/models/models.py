@@ -4,15 +4,18 @@ from datetime import datetime
 from passlib.context import CryptContext
 from pydantic import BaseModel
 
+
 class TipoRefeicao(Enum):
-    CAFE_MANHA=1
-    ALMOCO=2
-    JANTAR=3
-    CEIA=4
+    CAFE_MANHA = 1
+    ALMOCO = 2
+    JANTAR = 3
+    CEIA = 4
+
 
 class StatusPlano(Enum):
-    ATIVO=1
-    INATIVO=0
+    ATIVO = 1
+    INATIVO = 0
+
 
 class Base(DeclarativeBase):
     pass
@@ -20,7 +23,6 @@ class Base(DeclarativeBase):
 
 class ItemCatalogo(Base):
     __tablename__ = "item_catalogo"
-
 
     id: Mapped[str] = mapped_column(primary_key=True)
     nome: Mapped[str]
@@ -44,8 +46,7 @@ class User(Base):
     password_salt: Mapped[str]
     email: Mapped[str]
 
-
     @staticmethod
-    def get_password_hash(password: str, salt:str):
+    def get_password_hash(password: str, salt: str):
         pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-        return pwd_context.hash(password+salt)
+        return pwd_context.hash(password + salt)

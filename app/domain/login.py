@@ -17,26 +17,21 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 
-def verify_password(
-    plain_password: str, 
-    hashed_password: str,
-    password_salt: str
-):
-    return pwd_context.verify(plain_password+password_salt, hashed_password)
+def verify_password(plain_password: str, hashed_password: str, password_salt: str):
+    return pwd_context.verify(plain_password + password_salt, hashed_password)
 
 
 def authenticate_user(session: SessionDep, username: str, password: str):
-
     user = session.execute(
-        select(User).where(User.email==username)
+        select(User).where(User.email == username)
     ).scalar_one_or_none()
 
     if not user:
         return False
-    
+
     if not verify_password(password, user.password, user.password_salt):
         return False
-    
+
     return user
 
 
@@ -48,15 +43,13 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
         expire = datetime.now(timezone.utc) + timedelta(minutes=15)
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(
-        to_encode, os.getenv("SECRET_KEY"), 
-        algorithm=os.getenv("ALGORITHM")
+        to_encode, os.getenv("SECRET_KEY"), algorithm=os.getenv("ALGORITHM")
     )
     return encoded_jwt
 
 
 async def get_current_user(
-    session: SessionDep,
-    token: Annotated[str, Depends(oauth2_scheme)]
+    session: SessionDep, token: Annotated[str, Depends(oauth2_scheme)]
 ):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
@@ -66,9 +59,7 @@ async def get_current_user(
 
     try:
         payload = jwt.decode(
-            token, 
-            os.getenv("SECRET_KEY"), 
-            algorithms=[os.getenv("ALGORITHM")]
+            token, os.getenv("SECRET_KEY"), algorithms=[os.getenv("ALGORITHM")]
         )
         username = payload.get("sub")
         if username is None:
@@ -77,14 +68,14 @@ async def get_current_user(
 
     except InvalidTokenError:
         raise credentials_exception
-    
+
     user = session.execute(
-        select(User).where(User.email==token_data)
+        select(User).where(User.email == token_data)
     ).scalar_one_or_none()
 
     if user is None:
         raise credentials_exception
-    
+
     return user
 
 
@@ -92,4 +83,3 @@ async def get_current_active_user(
     current_user: Annotated[User, Depends(get_current_user)],
 ):
     return current_user
-

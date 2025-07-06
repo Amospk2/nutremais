@@ -15,4 +15,5 @@ def read_root(
 ):
     return {"Hello": "World", "user": current_user}
 
+
 app.include_router(login.router)
