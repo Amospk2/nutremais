@@ -1,4 +1,6 @@
 from fastapi.security import OAuth2PasswordRequestForm
+from sqlalchemy import select
+from app.models.requests import UserRequest
 from ..models.models import User
 from fastapi import APIRouter
 from fastapi import Depends, HTTPException, status
@@ -7,6 +9,7 @@ from typing import Annotated
 from datetime import timedelta
 from ..models.models import Token
 import os
+from ..domain.register import create
 from ..domain.login import (
     authenticate_user,
     create_access_token,
@@ -46,7 +49,10 @@ async def read_users_me(
 
 
 @router.get("/users/me/items/")
-async def read_own_items(
-    current_user: Annotated[User, Depends(get_current_active_user)],
-):
-    return [{"item_id": "Foo", "owner": current_user.email}]
+async def read_own_items(session: SessionDep):
+    return session.execute(select(User)).scalars().all()
+
+
+@router.post("/register")
+async def register(session: SessionDep, request: UserRequest):
+    return create(session=session, request=request)

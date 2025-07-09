@@ -44,7 +44,8 @@ class User(Base):
     status_plano: Mapped[StatusPlano]
     password: Mapped[str]
     password_salt: Mapped[str]
-    email: Mapped[str]
+    crm: Mapped[str]
+    email: Mapped[str] = mapped_column(unique=True)
 
     @staticmethod
     def get_password_hash(password: str, salt: str):

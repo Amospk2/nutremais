@@ -25,6 +25,7 @@ def initialize():
                 status_plano=StatusPlano.ATIVO,
                 password=User.get_password_hash("senhateste123", str(salt)),
                 password_salt=str(salt),
+                crm="",
                 email="teste@gmail.com",
             )
         )
