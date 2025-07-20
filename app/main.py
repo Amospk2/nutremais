@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from .routes import login
+from .routes import login, cardapio
 from .domain.login import get_current_active_user
 from typing import Annotated
 from fastapi import Depends
@@ -17,3 +17,4 @@ def read_root(
 
 
 app.include_router(login.router)
+app.include_router(cardapio.router)
